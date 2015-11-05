@@ -1,0 +1,23 @@
+{
+  "uuid": "88d55b02-353b-48be-a338-1951518a66ce",
+  "shortName": "Center Hours",
+  "longName": "Center Hours",
+  "companyName": "Willdorf",
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["basalt"],
+  "watchapp": {
+    "watchface": true
+  },
+  "capabilities" : [
+	  "configurable"
+  ],
+  "appKeys": {
+	  "backgroundColor" : 0,
+	  "minutesColor" : 1,
+	  "twentyFourHourFormat" : 2
+  },
+  "resources": {
+    "media": []
+  }
+}
