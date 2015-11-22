@@ -15,7 +15,9 @@
   "appKeys": {
 	  "backgroundColor" : 0,
 	  "minutesColor" : 1,
-	  "twentyFourHourFormat" : 2
+	  "twentyFourHourFormat" : 2,
+	  "KEY_TEMPERATURE" : 3,
+	  "KEY_CONDITIONS" : 4
   },
   "resources": {
     "media": [
