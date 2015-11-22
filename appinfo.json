@@ -17,7 +17,8 @@
 	  "minutesColor" : 1,
 	  "twentyFourHourFormat" : 2,
 	  "KEY_TEMPERATURE" : 3,
-	  "KEY_CONDITIONS" : 4
+	  "KEY_CONDITIONS" : 4,
+	  "degreeOption" : 5
   },
   "resources": {
     "media": [

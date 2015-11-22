@@ -22,6 +22,16 @@ $submitButton.on('click', function() {
 	document.location = return_to + encodeURIComponent(JSON.stringify(getAndStoreConfigData()));
 });
 
+var degreeOption = 0;
+function tabClickHandler(value) {
+	console.log(value);
+	if (value == "Celsius") {
+		degreeOption = 0;
+	} else if (value == "Fahrenheit") {
+		degreeOption = 1;
+	}
+}
+
 function getAndStoreConfigData() {
 	var $backgroundColorPicker = $('#backgroundColorPicker');
 	var $minutesColorPicker = $('#minutesColorPicker');
@@ -30,12 +40,14 @@ function getAndStoreConfigData() {
 	var options = {
 		backgroundColor : $backgroundColorPicker.val(),
 		minutesColor : $minutesColorPicker.val(),
-		twentyFourHourFormat : $timeFormatCheckbox[0].checked
+		twentyFourHourFormat : $timeFormatCheckbox[0].checked,
+		degreeOption : degreeOption
 	};
 
 	localStorage.willdorfcenterhoursbackgroundColor = options.backgroundColor;
 	localStorage.willdorfcenterhoursminutesColor = options.minutesColor;
 	localStorage.willdorfcenterhourstwentyFourHourFormat = options.twentyFourHourFormat;
+	localStorage.willdorfcenterhoursdegreeOption = options.degreeOption;
 
 	console.log('Got Options: ' + JSON.stringify(options));
 	return options;
@@ -46,10 +58,20 @@ function loadOptions() {
 	var $minutesColorPicker = $('#minutesColorPicker');
 	var $timeFormatCheckbox = $('#timeFormatCheckbox');
 
-	if (localStorage.backgroundColor) {
+	if (localStorage.willdorfcenterhoursbackgroundColor) {
 		$backgroundColorPicker[0].value = localStorage.willdorfcenterhoursbackgroundColor;
 		$minutesColorPicker[0].value = localStorage.willdorfcenterhoursminutesColor;
 		$timeFormatCheckbox[0].checked = localStorage.willdorfcenterhourstwentyFourHourFormat === 'true';
+
+		//set the corresponding tab to active
+		degreeOption = localStorage.willdorfcenterhoursdegreeOption;
+		if (degreeOption == 0) {
+			$('#Celsius').attr('class', 'tab-button active');
+		} else {
+			$('#Fahrenheit').attr('class', 'tab-button active');
+		}
+	} else {
+		$('#Celsius').attr('class', 'tab-button active');
 	}
 }
 

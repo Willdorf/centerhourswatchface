@@ -15,7 +15,8 @@ Pebble.addEventListener('webviewclosed', function(e) {
 		Pebble.sendAppMessage({
 			backgroundColor : parseInt(configData.backgroundColor, 16),
 			minutesColor : parseInt(configData.minutesColor, 16),
-			twentyFourHourFormat : configData.twentyFourHourFormat
+			twentyFourHourFormat : configData.twentyFourHourFormat,
+			degreeOption : parseInt(configData.degreeOption)
 		}, function() {
 			console.log("send successful!");
 		}, function() {
@@ -53,7 +54,7 @@ function locationSuccess(pos) {
 			var json = JSON.parse(responseText);
 
 			//Temperature is in Kelvin
-			var temperature = Math.round(json.main.temp - 273.15);
+			var temperature = Math.round(json.main.temp);
 			console.log('Temperature is ' + temperature);
 
 			//Conditions

@@ -8,6 +8,8 @@
 #define KEY_TEMPERATURE 3
 #define KEY_CONDITIONS 4
 
+#define KEY_DEGREEOPTION 5
+
 static Window *window;
 static Layer *s_layer;
 static TextLayer *s_time_layer;
@@ -25,6 +27,7 @@ static uint8_t s_min;
 static uint8_t s_sec;
 
 static bool twenty_four_hour_format = false;
+static int degreeOption = 0;
 
 static const GPathInfo CENTERBLOCK_INFO = {
 	.num_points = 36,
@@ -261,13 +264,32 @@ static void inbox_received_handler(DictionaryIterator *iter, void *context) {
 	Tuple *temp_t = dict_find(iter, KEY_TEMPERATURE);
 	Tuple *conditions_t = dict_find(iter, KEY_CONDITIONS);
 
+	Tuple *degreeOption_t = dict_find(iter, KEY_DEGREEOPTION);
+
 	//Store incoming information
 	static char temperature_buffer[8];
 	static char conditions_buffer[32];
 	static char weather_layer_buffer[42];
 
+	if (degreeOption_t) {
+		degreeOption = degreeOption_t->value->uint32;
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "degree Option : %d", degreeOption);
+		persist_write_int(KEY_DEGREEOPTION, degreeOption);
+	}
+
 	if (temp_t) {
-		snprintf(temperature_buffer, sizeof(temperature_buffer), "%d\u00B0", (int) temp_t->value->int32);
+		int kelvin = (int) temp_t->value->int32;
+		if (degreeOption == 0) {
+			//celsius
+			int celsius = kelvin - 273.15;
+			snprintf(temperature_buffer, sizeof(temperature_buffer), "%d\u00B0", (int) celsius);
+			APP_LOG(APP_LOG_LEVEL_DEBUG, "Degree option is Celsius: %d", degreeOption);
+		} else {
+			//fahrenheit
+			int fahrenheit = (kelvin - 273.15) * 1.8 + 32;
+			snprintf(temperature_buffer, sizeof(temperature_buffer), "%d\u00B0", (int) fahrenheit);
+			APP_LOG(APP_LOG_LEVEL_DEBUG, "Degree option is Fahrenheit: %d", degreeOption);
+		}
 	}
 
 	if (conditions_t) {
@@ -279,7 +301,6 @@ static void inbox_received_handler(DictionaryIterator *iter, void *context) {
 		text_layer_set_text_color(s_weather_layer, gcolor_legible_over(background_color));
 		text_layer_set_text(s_weather_layer, weather_layer_buffer);
 	}
-
 
 	if (twenty_four_hour_format_t) {
 		twenty_four_hour_format = twenty_four_hour_format_t->value->int8;
@@ -363,6 +384,12 @@ static void window_load(Window *window) {
 
 	if (persist_read_bool(KEY_TWENTY_FOUR_HOUR_FORMAT)) {
 		twenty_four_hour_format = persist_read_bool(KEY_TWENTY_FOUR_HOUR_FORMAT);
+	}
+
+	if (persist_read_int(KEY_DEGREEOPTION)) {
+		degreeOption = persist_read_int(KEY_DEGREEOPTION);
+	} else {
+		degreeOption = 0;
 	}
 
 	s_weather_layer = text_layer_create(GRect(0,152, 144, 14));
